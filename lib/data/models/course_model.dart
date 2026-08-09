@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CourseModel {
   final String id;
-  final String UserId;
+  final String userId;
   final String name;
   final String? lecturer;
   final String? room;
@@ -11,7 +11,7 @@ class CourseModel {
 
   CourseModel({
     required this.id,
-    required this.UserId,
+    required this.userId,
     required this.name,
     required this.lecturer,
     required this.room,
@@ -21,7 +21,7 @@ class CourseModel {
 
   factory CourseModel.fromJson(Map<String, dynamic> json) => CourseModel(
     id: json['id'] as String,
-    UserId: json['user_id'] as String,
+    userId: json['user_id'] as String,
     name: json['name'] as String,
     lecturer: json['lecturer'] as String,
     room: json['room'] as String,
@@ -33,7 +33,7 @@ class CourseModel {
 
   Map<String, dynamic> toJson() => {
     'id': id,
-    'user_id': UserId,
+    'user_id': userId,
     'name': name,
     'lecturer': lecturer,
     'room': room,
