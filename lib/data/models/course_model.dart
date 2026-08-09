@@ -19,25 +19,36 @@ class CourseModel {
     required this.createdAt,
   });
 
-  factory CourseModel.fromJson(Map<String, dynamic> json) => CourseModel(
-    id: json['id'] as String,
-    userId: json['user_id'] as String,
-    name: json['name'] as String,
-    lecturer: json['lecturer'] as String,
-    room: json['room'] as String,
-    color: json['color'] != null
-            ? Color(int.parse(json['color'] as String, radix: 16))
-            : Colors.blue,
-    createdAt: DateTime.parse(json['created_at'] as String),
-  );
+  factory CourseModel.fromJson(Map<String, dynamic> json) {
+    return CourseModel(
+      id: json['id'] as String,
+      userId: json['user_id'] as String,
+      name: json['name'] as String,
+      lecturer: json['lecturer'] as String?,
+      room: json['room'] as String?,
+      color: json['color'] != null
+          ? Color(
+              int.parse(
+                json['color'] as String,
+                radix: 16,
+              ),
+            )
+          : Colors.blue,
+      createdAt: DateTime.parse(
+        json['created_at'] as String,
+      ),
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'user_id': userId,
-    'name': name,
-    'lecturer': lecturer,
-    'room': room,
-    'color': color.value.toRadixString(16),
-    'created_at': createdAt
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'name': name,
+      'lecturer': lecturer,
+      'room': room,
+      'color': color.value.toRadixString(16),
+      'created_at': createdAt.toIso8601String(),
+    };
+  }
 }

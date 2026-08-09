@@ -26,19 +26,38 @@ class CourseFormController extends AsyncNotifier<void> {
   Future<void> build() async {}
 
   Future<bool> save(CourseModel course, {String? existingId}) async {
-    state = const AsyncLoading();
+  state = const AsyncLoading();
+
+  try {
     final repo = ref.read(courseRepositoryProvider);
 
-    final result = await AsyncValue.guard(() {
-      return existingId == null
-          ? repo.createCourse(course)
-          : repo.updateCourse(existingId, course);
-    });
+    print('SAVE: mulai');
+    print('SAVE: existingId = $existingId');
+    print('SAVE: course = ${course.toJson()}');
 
-    state = result.hasError ? AsyncError(result.error!, result.stackTrace!) : const AsyncData(null);
-    if (!result.hasError) ref.invalidate(coursesProvider);
-    return !result.hasError;
+    if (existingId == null) {
+      await repo.createCourse(course);
+      print('SAVE: CREATE BERHASIL');
+    } else {
+      await repo.updateCourse(existingId, course);
+      print('SAVE: UPDATE BERHASIL');
+    }
+
+    state = const AsyncData(null);
+
+    ref.invalidate(coursesProvider);
+
+    print('SAVE: SELESAI');
+
+    return true;
+  } catch (e, st) {
+    print('SAVE ERROR: $e');
+    print(st);
+
+    state = AsyncError(e, st);
+    return false;
   }
+}
 
   Future<bool> delete(String id) async {
     state = const AsyncLoading();

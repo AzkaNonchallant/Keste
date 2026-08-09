@@ -8,22 +8,18 @@ class DashboardRepository {
   final SupabaseClient _client;
   DashboardRepository(this._client);
 
-  static const _dayNames = [
-    'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu',
-  ];
+  Future<List> getTodaySchedule(String userId) async {
+  final today = DateTime.now().weekday;
 
-  Future<List<ScheduleModel>> getTodaySchedule(String userId) async {
-    final today = _dayNames[DateTime.now().weekday - 1];
+  final data = await _client
+      .from('schedules')
+      .select('*, courses!inner(name, room, user_id)')
+      .eq('courses.user_id', userId)
+      .eq('day', today)
+      .order('start_time');
 
-    final data = await _client
-        .from('schedules')
-        .select('*, courses!inner(name, room, user_id)')
-        .eq('courses.user_id', userId)
-        .eq('day', today)
-        .order('start_time');
-
-    return (data as List).map((e) => ScheduleModel.fromJson(e)).toList();
-  }
+  return (data as List).map((e) => ScheduleModel.fromJson(e)).toList();
+}
 
   Future<List<AssignmentModel>> getUpcomingAssignments(
     String userId, {
