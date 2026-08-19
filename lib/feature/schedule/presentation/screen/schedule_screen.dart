@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:keste/core/constant/app_color.dart';
 import 'package:keste/feature/schedule/provider/schedule_provider.dart';
+import 'package:keste/shared/widget/bottom_navbar.dart';
 import '../../data/schedule_repository.dart';
 
 class ScheduleScreen extends ConsumerStatefulWidget {
@@ -99,6 +100,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
         onPressed: () => context.push('/schedule/new'),
         child: const Icon(Icons.add, color: Colors.white),
       ),
+      bottomNavigationBar: const BottomNavbar(),
     );
   }
 

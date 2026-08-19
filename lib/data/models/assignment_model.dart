@@ -1,7 +1,3 @@
-enum AssignmentStatus { todo, inProgress, completed }
-
-enum AssignmentPriority { low, medium, high }
-
 class AssignmentModel {
   final String id;
   final String courseId;
@@ -10,8 +6,8 @@ class AssignmentModel {
   final DateTime deadline;
   final AssignmentPriority priority;
   final AssignmentStatus status;
+  final String? submissionFileUrl;
   final DateTime createdAt;
-
   final String? courseName;
 
   AssignmentModel({
@@ -22,6 +18,7 @@ class AssignmentModel {
     required this.deadline,
     this.priority = AssignmentPriority.medium,
     this.status = AssignmentStatus.todo,
+    this.submissionFileUrl,
     required this.createdAt,
     this.courseName,
   });
@@ -40,6 +37,7 @@ class AssignmentModel {
           (e) => e.name.replaceAll('inProgress', 'in_progress') == json['status'],
           orElse: () => AssignmentStatus.todo,
         ),
+        submissionFileUrl: json['submission_file_url'] as String?,
         createdAt: DateTime.parse(json['created_at'] as String),
         courseName: json['courses']?['name'] as String?,
       );
@@ -55,3 +53,6 @@ class AssignmentModel {
 
   bool get isOverdue => status != AssignmentStatus.completed && deadline.isBefore(DateTime.now());
 }
+
+enum AssignmentStatus { todo, inProgress, completed }
+enum AssignmentPriority { low, medium, high }

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:keste/core/provider/supabase_provider.dart';
-import 'package:keste/data/models/todo_model.dart';
-import 'package:keste/feature/todos/data/todo_repository.dart';
+import '../../../data/models/todo_model.dart';
+import '../data/todo_repository.dart';
 
 final todoRepositoryProvider = Provider<TodoRepository>((ref) {
   return TodoRepository(ref.watch(supabaseProvider));
@@ -34,8 +34,6 @@ class TodoListNotifier extends AsyncNotifier<List<TodoModel>> {
     return true;
   }
 
-  /// Optimistic update: state di-update langsung (instan di UI),
-  /// rollback otomatis (refetch) kalau request ke server gagal.
   Future<void> toggle(TodoModel todo) async {
     final current = state.value ?? [];
     final optimistic = current

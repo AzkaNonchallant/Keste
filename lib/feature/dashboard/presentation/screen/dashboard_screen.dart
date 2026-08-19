@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:keste/core/constant/app_color.dart';
 import 'package:keste/feature/auth/provider/auth_provider.dart';
 import 'package:keste/feature/dashboard/provider/dashboard_provider.dart';
+import 'package:keste/shared/widget/bottom_navbar.dart';
 
 
 class DashboardScreen extends ConsumerWidget {
@@ -16,19 +18,35 @@ class DashboardScreen extends ConsumerWidget {
     final profileAsync = ref.watch(currentProfileProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: profileAsync.when(
-          data: (profile) => Text('Halo, ${profile?.fullName.split(' ').first ?? ''} 👋'),
-          loading: () => const Text('Campus Hub'),
-          error: (_, __) => const Text('Campus Hub'),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person_outline),
-            onPressed: () => context.push('/profile'),
+     appBar: AppBar(
+  centerTitle: false,
+  leading: IconButton(
+    icon: const Icon(Icons.person_outline),
+    onPressed: () => context.push('/profile'),
+  ),
+  title: profileAsync.when(
+    data: (profile) => Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        
+        Text(
+          'Welcome Back',
+          style: GoogleFonts.robotoMono(
+            fontSize: 14,
+            color: AppColors.textSecondary,
           ),
-        ],
-      ),
+        ),
+        Text(
+          'Halo, ${profile?.fullName.split(' ').first ?? ''} 👋', style: GoogleFonts.robotoMono(fontStyle: GoogleFonts.poppins().fontStyle),
+        ),
+      ],
+    ),
+    loading: () => const Text('Campus Hub'),
+    error: (_, __) => const Text('Campus Hub'),
+  ),
+  
+),
       body: RefreshIndicator(
         onRefresh: () async => ref.invalidate(dashboardProvider),
         child: dashboardAsync.when(
@@ -39,7 +57,7 @@ class DashboardScreen extends ConsumerWidget {
             children: [
               _ProgressCard(data: data),
               const SizedBox(height: 20),
-              _SectionHeader(title: 'Jadwal Hari Ini', onSeeAll: () => context.push('/schedule')),
+              _SectionHeader(title: 'Jadwal Hari Ini' , onSeeAll: () => context.push('/schedule')),
               if (data.todaySchedule.isEmpty)
                 const _EmptyText('Tidak ada jadwal hari ini')
               else
@@ -100,7 +118,7 @@ class DashboardScreen extends ConsumerWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const _DashboardBottomNav(),
+      bottomNavigationBar: const BottomNavbar(),
     );
   }
 }
@@ -113,35 +131,45 @@ class _ProgressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
+
+        
         padding: const EdgeInsets.all(16),
+
+        
         child: Row(
           children: [
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   Text('Progress Tugas', style: GoogleFonts.robotoMono().copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+                   SizedBox(height: 8),
+                  Text('You have completed ${data.completedAssignments} of ${data.totalAssignments} task', style: GoogleFonts.robotoMono().copyWith(color: AppColors.textSecondary)),
+                ],
+              ),
+            ),
             SizedBox(
-              width: 56,
-              height: 56,
+              width: 80,
+              height: 80,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  CircularProgressIndicator(
-                    value: data.progress,
-                    backgroundColor: AppColors.background,
-                    strokeWidth: 6,
+                  Transform.scale(
+                    scale: 1.5,
+                    child: CircularProgressIndicator(
+                      value: data.progress,
+                      backgroundColor: AppColors.background,
+                      strokeWidth: 6,
+                    ),
                   ),
                   Text('${(data.progress * 100).toInt()}%',
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Progress Tugas', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text('${data.completedAssignments} dari ${data.totalAssignments} tugas selesai'),
-                ],
-              ),
-            ),
+         
+            
           ],
         ),
       ),
@@ -159,7 +187,7 @@ class _SectionHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(title, style:  GoogleFonts.robotoMono().copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
         TextButton(onPressed: onSeeAll, child: const Text('Lihat semua')),
       ],
     );
@@ -179,27 +207,3 @@ class _EmptyText extends StatelessWidget {
   }
 }
 
-class _DashboardBottomNav extends StatelessWidget {
-  const _DashboardBottomNav();
-
-  @override
-  Widget build(BuildContext context) {
-    return NavigationBar(
-      selectedIndex: 0,
-      onDestinationSelected: (i) {
-        switch (i) {
-          case 0: context.go('/dashboard'); break;
-          case 1: context.go('/courses'); break;
-          case 2: context.go('/schedule'); break;
-          case 3: context.go('/todos'); break;
-        }
-      },
-      destinations: const [
-        NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-        NavigationDestination(icon: Icon(Icons.book_outlined), selectedIcon: Icon(Icons.book), label: 'Courses'),
-        NavigationDestination(icon: Icon(Icons.schedule_outlined), selectedIcon: Icon(Icons.schedule), label: 'Jadwal'),
-        NavigationDestination(icon: Icon(Icons.checklist_outlined), selectedIcon: Icon(Icons.checklist), label: 'Todo'),
-      ],
-    );
-  }
-}

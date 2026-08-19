@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:keste/core/constant/app_color.dart';
+import 'package:keste/shared/widget/bottom_navbar.dart';
 
 import '../../providers/todo_provider.dart';
 import '../../../../data/models/todo_model.dart';
@@ -49,6 +51,7 @@ class TodoScreen extends ConsumerWidget {
         onPressed: () => _showAddDialog(context, ref),
         child: const Icon(Icons.add, color: Colors.white),
       ),
+      bottomNavigationBar: const BottomNavbar(),
     );
   }
 
@@ -104,7 +107,7 @@ class _TodoTile extends ConsumerWidget {
           onChanged: (_) => ref.read(todosProvider.notifier).toggle(todo),
           title: Text(
             todo.title,
-            style: TextStyle(
+            style: GoogleFonts.robotoMono().copyWith(
               decoration: todo.completed ? TextDecoration.lineThrough : null,
               color: todo.completed ? AppColors.textSecondary : AppColors.textPrimary,
             ),

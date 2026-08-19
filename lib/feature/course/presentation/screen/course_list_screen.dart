@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:keste/core/constant/app_color.dart';
 import 'package:keste/feature/course/provider/course_provider.dart';
+import 'package:keste/shared/widget/bottom_navbar.dart';
 
 
 class CourseListScreen extends ConsumerWidget {
@@ -54,6 +55,7 @@ class CourseListScreen extends ConsumerWidget {
         onPressed: () => context.push('/courses/new'),
         child: const Icon(Icons.add, color: Colors.white),
       ),
+      bottomNavigationBar: const BottomNavbar(),
     );
   }
 }
