@@ -28,6 +28,13 @@ class _ScheduleFormScreenState extends ConsumerState<ScheduleFormScreen> {
     final coursesAsync = ref.watch(coursesProvider);
     final formState = ref.watch(scheduleFormControllerProvider);
     final isEdit = widget.scheduleId != null;
+      ref.listen(scheduleFormControllerProvider, (previous, next) {
+    if (next.hasError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal menyimpan: ${next.error}')),
+      );
+    }
+  });
 
     return Scaffold(
       appBar: AppBar(title: Text(isEdit ? 'Edit Jadwal' : 'Tambah Jadwal')),

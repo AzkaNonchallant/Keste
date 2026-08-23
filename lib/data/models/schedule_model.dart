@@ -2,9 +2,10 @@ class ScheduleModel {
   final String id;
   final String courseId;
   final String day; 
-  final String startTime;
+  final String startTime; 
   final String endTime; 
   final DateTime createdAt;
+
   final String? courseName;
   final String? room;
 

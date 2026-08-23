@@ -8,18 +8,23 @@ class DashboardRepository {
   final SupabaseClient _client;
   DashboardRepository(this._client);
 
-  Future<List> getTodaySchedule(String userId) async {
-  final today = DateTime.now().weekday;
+  static const _dayNames = [
+    'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu',
+  ];
 
-  final data = await _client
-      .from('schedules')
-      .select('*, courses!inner(name, room, user_id)')
-      .eq('courses.user_id', userId)
-      .eq('day', today)
-      .order('start_time');
+  Future<List<ScheduleModel>> getTodaySchedule(String userId) async {
+    // weekday: 1 (Senin) ... 7 (Minggu) -> konversi balik ke nama hari
+    final today = _dayNames[DateTime.now().weekday - 1];
 
-  return (data as List).map((e) => ScheduleModel.fromJson(e)).toList();
-}
+    final data = await _client
+        .from('schedules')
+        .select('*, courses!inner(name, room, user_id)')
+        .eq('courses.user_id', userId)
+        .eq('day', today)
+        .order('start_time');
+
+    return (data as List).map((e) => ScheduleModel.fromJson(e)).toList();
+  }
 
   Future<List<AssignmentModel>> getUpcomingAssignments(
     String userId, {
@@ -57,7 +62,6 @@ class DashboardRepository {
     return (data as List).map((e) => EventModel.fromJson(e)).toList();
   }
 
-  /// Progress tugas: total vs completed
   Future<({int total, int completed})> getAssignmentProgress(String userId) async {
     final data = await _client
         .from('assignments')

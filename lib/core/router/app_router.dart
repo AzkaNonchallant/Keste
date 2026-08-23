@@ -91,8 +91,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // ===== SCHEDULE =====
-      // Bisa dibuka global (/schedule) atau difilter per matkul (/schedule?courseId=xxx)
+    
       GoRoute(
         path: '/schedule',
         builder: (c, s) => ScheduleScreen(
@@ -109,7 +108,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // ===== ASSIGNMENTS =====
       GoRoute(
         path: '/assignments',
         builder: (c, s) => AssignmentListScreen(
