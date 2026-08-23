@@ -4,16 +4,34 @@ import 'package:go_router/go_router.dart';
 class BottomNavbar extends StatelessWidget {
   const BottomNavbar({super.key});
 
+  int _indexFromLocation(String location) {
+    if (location.startsWith('/courses')) return 1;
+    if (location.startsWith('/schedule')) return 2;
+    if (location.startsWith('/todos')) return 3;
+    return 0; // default -> dashboard/home
+  }
+
   @override
   Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).matchedLocation;
+    final selectedIndex = _indexFromLocation(location);
+
     return NavigationBar(
-      selectedIndex: 0,
+      selectedIndex: selectedIndex,
       onDestinationSelected: (i) {
         switch (i) {
-          case 0: context.go('/dashboard'); break;
-          case 1: context.go('/courses'); break;
-          case 2: context.go('/schedule'); break;
-          case 3: context.go('/todos'); break;
+          case 0:
+            context.go('/dashboard');
+            break;
+          case 1:
+            context.go('/courses');
+            break;
+          case 2:
+            context.go('/schedule');
+            break;
+          case 3:
+            context.go('/todos');
+            break;
         }
       },
       destinations: const [
