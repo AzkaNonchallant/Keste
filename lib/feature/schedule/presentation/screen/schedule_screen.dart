@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:keste/core/constant/app_color.dart';
+import 'package:keste/feature/notifications/providers/notification_provider.dart';
 import 'package:keste/feature/schedule/provider/schedule_provider.dart';
 import 'package:keste/shared/widget/bottom_navbar.dart';
 import '../../data/schedule_repository.dart';
@@ -46,6 +47,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
   @override
   Widget build(BuildContext context) {
     final groupedAsync = ref.watch(schedulesByDayProvider);
+    final unreadAsync = ref.watch(unreadCountProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
@@ -69,8 +71,17 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.notifications_none_rounded),
-                    onPressed: () {},
+                    icon: unreadAsync.when(
+                      data: (count) => count > 0
+                          ? Badge(
+                              label: Text('$count', style: const TextStyle(fontSize: 10, color: Colors.white)),
+                              child: const Icon(Icons.notifications_none_rounded),
+                            )
+                          : const Icon(Icons.notifications_none_rounded),
+                      loading: () => const Icon(Icons.notifications_none_rounded),
+                      error: (_, __) => const Icon(Icons.notifications_none_rounded),
+                    ),
+                    onPressed: () => context.push('/notifications'),
                   ),
                 ],
               ),

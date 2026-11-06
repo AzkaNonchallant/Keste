@@ -35,6 +35,8 @@ import 'package:keste/feature/announcements/presentation/screens/announcement_de
 import 'package:keste/feature/events/presentation/screens/event_list_screen.dart';
 import 'package:keste/feature/events/presentation/screens/event_detail_screen.dart';
 
+import 'package:keste/feature/notifications/presentation/screens/notification_screen.dart';
+
 final routerProvider = Provider<GoRouter>((ref) {
   final supabase = ref.watch(supabaseProvider);
 
@@ -204,6 +206,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+
+      // ===== NOTIFICATIONS =====
+      GoRoute(
+        path: '/notifications',
+        builder: (c, s) => const NotificationScreen(),
       ),
     ],
   );

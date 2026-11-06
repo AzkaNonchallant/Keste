@@ -43,6 +43,7 @@ class AuthController extends AsyncNotifier<void> {
     return true;
   }
 
+
   Future<bool> register(
     String email,
     String password,

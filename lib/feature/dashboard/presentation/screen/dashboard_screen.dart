@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:keste/core/constant/app_color.dart';
 import 'package:keste/feature/auth/provider/auth_provider.dart';
 import 'package:keste/feature/dashboard/provider/dashboard_provider.dart';
+import 'package:keste/feature/notifications/providers/notification_provider.dart';
 import 'package:keste/shared/neo_brutal.dart';
 import 'package:keste/shared/widget/bottom_navbar.dart';
 
@@ -16,6 +17,8 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardAsync = ref.watch(dashboardProvider);
     final profileAsync = ref.watch(currentProfileProvider);
+    ref.watch(scheduleNotificationsProvider);
+    final unreadAsync = ref.watch(unreadCountProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -25,6 +28,21 @@ class DashboardScreen extends ConsumerWidget {
           icon: const Icon(Icons.person_outline),
           onPressed: () => context.push('/profile'),
         ),
+        actions: [
+          IconButton(
+            icon: unreadAsync.when(
+              data: (count) => count > 0
+                  ? Badge(
+                      label: Text('$count', style: const TextStyle(fontSize: 10, color: Colors.white)),
+                      child: const Icon(Icons.notifications_none_rounded),
+                    )
+                  : const Icon(Icons.notifications_none_rounded),
+              loading: () => const Icon(Icons.notifications_none_rounded),
+              error: (_, __) => const Icon(Icons.notifications_none_rounded),
+            ),
+            onPressed: () => context.push('/notifications'),
+          ),
+        ],
         
         title: profileAsync.when(
           data: (profile) => Column(
